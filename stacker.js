@@ -43,6 +43,11 @@ function gameLoop() {
 
     if(spacePressed) {
         var posDiff = barPos - bars[bars.length - 1].pos
+
+        if (posDiff > barSize / 2 + bars[bars.length - 1].size / 2) {
+            callGameOver();
+        }
+
         barSize = barSize - (Math.abs(posDiff));
         barPos -= posDiff / 2;
         bars.push(new Bar(barPos, barHeight, barSize));
@@ -76,6 +81,22 @@ function render() {
     ctx.fillStyle = "white";
     ctx.fillRect(barPos - (barSize / 2), barHeight, barSize, 50);
 
+    ctx.stroke();
+}
+
+function callGameOver() {
+    gameLoopOn = false;
+    clearTimeout(theGameLoop);
+    setTimeout(gameOver, 100);
+}
+
+function gameOver() {
+    ctx.font = "30px Arial";
+    ctx.textAlign = "center";
+    ctx.fillStyle = "white";
+    ctx.fillRect(300,350,200,80);
+    ctx.fillStyle = "black";
+    ctx.fillText("Game Over", 400, 400);
     ctx.stroke();
 }
 
