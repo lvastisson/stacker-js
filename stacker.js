@@ -6,14 +6,20 @@ var areaHeight = 1200;
 
 var spacePressed = false;
 var spaceReleased = true;
-var barSizeX = 200;
+var barSizeX = 400;
 var barSizeY = 50;
 var barPos = areaWidth / 2;
 var barHeight = areaHeight - barSizeY * 2;
+
 var barDir = 1;
 var barSpeed = 10;
 var speedIncreaseIncrement = 2;
 var stepsBeforeSpeedIncrease = 5;
+
+var previousHeightOffset = 0;
+var currentHeightOffset = 0;
+var targetHeightOffset = 0;
+var heightChangeSpeed = 10;
 
 var score = 0;
 
@@ -136,6 +142,10 @@ function gameLoop() {
         barDir = -barDir;
     }
 
+    if (barHeight < areaHeight / 4 - targetHeightOffset) {
+        targetHeightOffset += areaHeight / 2;
+    }
+
     barPos += barDir * barSpeed;
 
     render();
@@ -148,23 +158,46 @@ function gameLoop() {
 function render() {
     ctx.clearRect(0, 0, areaWidth, areaHeight);
 
+    var offset = 0;
+
+    if (currentHeightOffset < targetHeightOffset) {
+        offset = easeHeightTransition(currentHeightOffset, previousHeightOffset, targetHeightOffset - previousHeightOffset, targetHeightOffset);
+        currentHeightOffset += heightChangeSpeed;
+    }
+    else {
+        currentHeightOffset = targetHeightOffset;
+        previousHeightOffset = currentHeightOffset;
+        offset = targetHeightOffset;
+    }
+
+    offset = Math.floor(offset);
+
     ctx.fillStyle = "black";
     ctx.fillRect(0, 0, areaWidth, areaHeight);
 
     for (let i = 0; i < bars.length; i++) {
         const elem = bars[i];
 
+        if (elem.height > areaHeight + barSizeY)
+            continue;
+
         ctx.fillStyle = colors[getLoopingIndex(i, colors.length)];
         
-        ctx.fillRect(elem.pos - (elem.size / 2), elem.height, elem.size, barSizeY)
+        ctx.fillRect(elem.pos - (elem.size / 2), elem.height + offset, elem.size, barSizeY)
     }
 
     ctx.fillStyle = colors[getLoopingIndex(bars.length, colors.length)];
-    ctx.fillRect(barPos - (barSizeX / 2), barHeight, barSizeX, barSizeY);
+    ctx.fillRect(barPos - (barSizeX / 2), barHeight + offset, barSizeX, barSizeY);
 
     ctx.stroke();
 
     displayScore();
+}
+
+// Quadratic easing in and out (https://spicyyoghurt.com/tools/easing-functions)
+function easeHeightTransition (t, b, c, d) {
+    if ((t /= d / 2) < 1) return c / 2 * t * t + b;
+    return -c / 2 * ((--t) * (t - 2) - 1) + b;
 }
 
 function displayScore() {
