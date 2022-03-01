@@ -6,9 +6,10 @@ var areaHeight = 1200;
 
 var spacePressed = false;
 var spaceReleased = true;
-var barSize = 200;
+var barSizeX = 200;
+var barSizeY = 50;
 var barPos = areaWidth / 2;
-var barHeight = areaHeight - 100;
+var barHeight = areaHeight - barSizeY * 2;
 var barDir = 1;
 var barSpeed = 10;
 var speedIncreaseIncrement = 2;
@@ -16,7 +17,7 @@ var stepsBeforeSpeedIncrease = 5;
 
 var score = 0;
 
-var bars = [new Bar(areaWidth / 2, areaHeight - 50,barSize)];
+var bars = [new Bar(areaWidth / 2, areaHeight - barSizeY,barSizeX)];
 
 // var colors = ['white', 'red', 'gray', 'yellow', 'orange', 'purple', 'green', 'pink'];
 var colors = [
@@ -114,17 +115,17 @@ function gameLoop() {
     if(spacePressed) {
         var posDiff = barPos - bars[bars.length - 1].pos
 
-        if (Math.abs(posDiff) >= barSize / 2 + bars[bars.length - 1].size / 2) {
+        if (Math.abs(posDiff) >= barSizeX / 2 + bars[bars.length - 1].size / 2) {
             callGameOver();
         }
         else {
             score++;
         }
 
-        barSize = barSize - (Math.abs(posDiff));
+        barSizeX = barSizeX - (Math.abs(posDiff));
         barPos -= posDiff / 2;
-        bars.push(new Bar(barPos, barHeight, barSize));
-        barHeight -= 50;
+        bars.push(new Bar(barPos, barHeight, barSizeX));
+        barHeight -= barSizeY;
         spacePressed = false;
 
         if (bars.length % stepsBeforeSpeedIncrease == 0) {
@@ -155,11 +156,11 @@ function render() {
 
         ctx.fillStyle = colors[getLoopingIndex(i, colors.length)];
         
-        ctx.fillRect(elem.pos - (elem.size / 2), elem.height, elem.size, 50)
+        ctx.fillRect(elem.pos - (elem.size / 2), elem.height, elem.size, barSizeY)
     }
 
     ctx.fillStyle = colors[getLoopingIndex(bars.length, colors.length)];
-    ctx.fillRect(barPos - (barSize / 2), barHeight, barSize, 50);
+    ctx.fillRect(barPos - (barSizeX / 2), barHeight, barSizeX, barSizeY);
 
     ctx.stroke();
 
