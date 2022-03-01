@@ -1,15 +1,20 @@
 var c = document.querySelector("#myCanvas");
 var ctx = c.getContext("2d");
 
+var areaWidth = 800;
+var areaHeight = 1200;
+
 var spacePressed = false;
 var spaceReleased = true;
 var barSize = 200;
-var barPos = 400;
-var barHeight = 1100;
+var barPos = areaWidth / 2;
+var barHeight = areaHeight - 100;
 var barDir = 1;
 var barSpeed = 10;
 
-var bars = [new Bar(400, 1150,200)];
+var score = 0;
+
+var bars = [new Bar(areaWidth / 2, areaHeight - 50,200)];
 
 var colors = ['white', 'red', 'gray', 'yellow', 'orange', 'purple', 'green', 'pink'];
 
@@ -55,6 +60,9 @@ function gameLoop() {
         if (Math.abs(posDiff) >= barSize / 2 + bars[bars.length - 1].size / 2) {
             callGameOver();
         }
+        else {
+            score++;
+        }
 
         barSize = barSize - (Math.abs(posDiff));
         barPos -= posDiff / 2;
@@ -62,7 +70,7 @@ function gameLoop() {
         barHeight -= 50;
         spacePressed = false;
     }
-    else if (barPos < 200 || barPos > 600) {
+    else if (barPos < 200 || barPos > areaWidth - 200) {
         barDir = -barDir;
     }
 
@@ -74,10 +82,10 @@ function gameLoop() {
 }
 
 function render() {
-    ctx.clearRect(0, 0, 800, 1200);
+    ctx.clearRect(0, 0, areaWidth, areaHeight);
 
     ctx.fillStyle = "black";
-    ctx.fillRect(0, 0, 800, 1200);
+    ctx.fillRect(0, 0, areaWidth, areaHeight);
 
     for (let i = 0; i < bars.length; i++) {
         const elem = bars[i];
@@ -90,6 +98,16 @@ function render() {
     ctx.fillStyle = colors[getLoopingIndex(bars.length, colors.length)];
     ctx.fillRect(barPos - (barSize / 2), barHeight, barSize, 50);
 
+    ctx.stroke();
+
+    displayScore();
+}
+
+function displayScore() {
+    ctx.font = "20px Arial";
+    ctx.fillStyle = "white";
+    ctx.textAlign = "left";
+    ctx.fillText("Score: " + score, 0, 20);
     ctx.stroke();
 }
 
@@ -107,9 +125,9 @@ function gameOver() {
     ctx.font = "30px Arial";
     ctx.textAlign = "center";
     ctx.fillStyle = "white";
-    ctx.fillRect(300,350,200,80);
+    ctx.fillRect(areaWidth / 2 - 100, areaHeight / 2 - 50,200,80);
     ctx.fillStyle = "black";
-    ctx.fillText("Game Over", 400, 400);
+    ctx.fillText("Game Over", areaWidth / 2, areaHeight / 2);
     ctx.stroke();
 }
 
