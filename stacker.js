@@ -11,10 +11,12 @@ var barPos = areaWidth / 2;
 var barHeight = areaHeight - 100;
 var barDir = 1;
 var barSpeed = 10;
+var speedIncreaseIncrement = 2;
+var stepsBeforeSpeedIncrease = 5;
 
 var score = 0;
 
-var bars = [new Bar(areaWidth / 2, areaHeight - 50,200)];
+var bars = [new Bar(areaWidth / 2, areaHeight - 50,barSize)];
 
 var colors = ['white', 'red', 'gray', 'yellow', 'orange', 'purple', 'green', 'pink'];
 
@@ -52,8 +54,6 @@ function initializeGame() {
 }
 
 function gameLoop() {
-    barPos += barDir * barSpeed;
-
     if(spacePressed) {
         var posDiff = barPos - bars[bars.length - 1].pos
 
@@ -69,10 +69,16 @@ function gameLoop() {
         bars.push(new Bar(barPos, barHeight, barSize));
         barHeight -= 50;
         spacePressed = false;
+
+        if (bars.length % stepsBeforeSpeedIncrease == 0) {
+            barSpeed += speedIncreaseIncrement;
+        }        
     }
     else if (barPos < 200 || barPos > areaWidth - 200) {
         barDir = -barDir;
     }
+
+    barPos += barDir * barSpeed;
 
     render();
 
