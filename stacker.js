@@ -89,12 +89,6 @@ var theGameLoop;
 var gameLoopOn = true;
 
 function runGame() {
-
-  for (let index = 0; index < 100; index++) {
-
-    console.log(getLoopingIndex(index, colors.length - 1));
-  }
-
   initializeGame();
   gameLoop();
 }
@@ -160,7 +154,7 @@ function render() {
   var offset = 0;
 
   if (currentHeightOffset < targetHeightOffset) {
-    offset = easeHeightTransition(currentHeightOffset, previousHeightOffset, targetHeightOffset - previousHeightOffset, targetHeightOffset);
+    offset = easeHeightTransition(currentHeightOffset - previousHeightOffset, previousHeightOffset, targetHeightOffset - previousHeightOffset, targetHeightOffset - previousHeightOffset);
     currentHeightOffset += heightChangeSpeed;
   } else {
     currentHeightOffset = targetHeightOffset;
