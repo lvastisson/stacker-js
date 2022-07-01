@@ -1,12 +1,13 @@
 var c = document.querySelector("#myCanvas");
 var ctx = c.getContext("2d");
 
-var areaWidth = 800;
-var areaHeight = 1200;
+var areaWidth = window.innerWidth;
+var areaHeight = window.innerHeight;
 
 var spacePressed = false;
 var spaceReleased = true;
-var barSizeX = 400;
+var barWidth = 400;
+var barSizeX = barWidth;
 var barSizeY = 50;
 var barPos = areaWidth / 2;
 var barHeight = areaHeight - barSizeY * 2;
@@ -25,7 +26,6 @@ var score = 0;
 
 var bars = [new Bar(areaWidth / 2, areaHeight - barSizeY, barSizeX)];
 
-// var colors = ['white', 'red', 'gray', 'yellow', 'orange', 'purple', 'green', 'pink'];
 var colors = [
   '#09522f',
   '#175c39',
@@ -88,6 +88,29 @@ var colors = [
 var theGameLoop;
 var gameLoopOn = true;
 
+ctx.canvas.width  = window.innerWidth;
+ctx.canvas.height = window.innerHeight;
+
+showIntroduction();
+
+function showIntroduction() {
+  ctx.font = "30px Arial";
+  ctx.textAlign = "center";
+  ctx.fillStyle = "white";
+  ctx.fillRect(areaWidth / 2 - 200, areaHeight / 2 - 50, 400, 80);
+  ctx.fillStyle = "black";
+  ctx.fillText("Press space to start", areaWidth / 2, areaHeight / 2);
+  ctx.stroke();
+}
+
+document.addEventListener('keydown', function (event) {
+  if (event.keyCode == 32) {
+    event.preventDefault();
+
+    runGame();
+  }
+}, { once: true });
+
 function runGame() {
   initializeGame();
   gameLoop();
@@ -131,7 +154,7 @@ function gameLoop() {
     if (bars.length % stepsBeforeSpeedIncrease == 0) {
       barSpeed += speedIncreaseIncrement;
     }
-  } else if (barPos < 200 || barPos > areaWidth - 200) {
+  } else if (barPos < (areaWidth / 2 - barWidth / 2) || barPos > (areaWidth / 2 + barWidth / 2)) {
     barDir = -barDir;
   }
 
